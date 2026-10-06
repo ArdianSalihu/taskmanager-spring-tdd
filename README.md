@@ -1,18 +1,22 @@
 # Task Manager Backend (Spring Boot + TDD)
 
-Ein einfaches Task-Management-Backend, entwickelt mit Spring Boot, Spring Data JPA und MySQL. Verwaltet Projekte und die dazugehörigen Tasks, inklusive einer Datenbank-Beziehung zwischen beiden.
+Ein einfaches Task-Management-Backend, entwickelt mit Spring Boot, Spring Data JPA und MySQL. Verwaltet Projekte und die dazugehörigen Tasks, inklusive Registrierung, Login und Zugriffsschutz.
 
 ## Verwendete Konzepte
 
 - Test-Driven Development (Repository-Ebene, mit @DataJpaTest)
 - Spring Boot (REST-Controller, Dependency Injection)
 - Spring Data JPA (automatische Datenbank-Anbindung über Repositories)
-- Datenbank-Beziehungen (@ManyToOne zwischen Task und Projekt)
+- Spring Security (Basic Auth, BCrypt-Passwort-Hashing)
+- Datenbank-Beziehungen (@ManyToOne von Task zu Projekt und zu Nutzer)
 - MySQL als relationale Datenbank
 - Validierung und zentrale Fehlerbehandlung (@ExceptionHandler)
 - Vollständige REST-Prinzipien (GET, POST, PUT, DELETE)
 
 ## Endpunkte
+
+### Authentifizierung
+- `POST /auth/registrieren` – Neuen Nutzer registrieren (ohne Login erreichbar)
 
 ### Projekt
 - `GET /projekt` – Alle Projekte anzeigen
@@ -20,9 +24,9 @@ Ein einfaches Task-Management-Backend, entwickelt mit Spring Boot, Spring Data J
 
 ### Task
 - `GET /task` – Alle Tasks anzeigen
-- `POST /task` – Neue Task erstellen (mit Verknüpfung zu einem bestehenden Projekt)
+- `POST /task` – Neue Task erstellen (mit Verknüpfung zu einem bestehenden Projekt, wird dem eingeloggten Nutzer zugewiesen)
 - `PUT /task/{id}/status` – Status einer Task ändern
-- `DELETE /task/{id}` – Task löschen
+- `DELETE /task/{id}` – Task löschen (nur durch den Bearbeiter)
 
 ## Setup
 
@@ -31,6 +35,16 @@ Ein einfaches Task-Management-Backend, entwickelt mit Spring Boot, Spring Data J
 3. Eigenes MySQL-Passwort in `application.properties` eintragen
 4. Projekt über `TaskmanagerSpringApplication` starten
 
+## Authentifizierung und Berechtigungen
+
+- Alle Endpunkte außer `POST /auth/registrieren` sind per Basic Auth geschützt
+- Passwörter werden mit BCrypt gehasht gespeichert und nie in Antworten zurückgegeben
+- Alle eingeloggten Nutzer sehen alle Projekte und Tasks
+- Eine neue Task wird automatisch dem eingeloggten Nutzer zugewiesen
+- Den Status einer Task darf jeder eingeloggte Nutzer ändern
+- Löschen darf nur der Bearbeiter der Task, bei fremden Tasks antwortet die API mit 403 Forbidden
+- Tasks ohne Bearbeiter (zum Beispiel vor dem Einbau der Nutzer angelegte) können nicht gelöscht werden
+
 ## Testen
 
-Die Repository-Schicht ist testgetrieben entwickelt (siehe `src/test`). Die REST-Endpunkte können zusätzlich mit Postman getestet werden.
+Die Repository-Schicht ist testgetrieben entwickelt (siehe `src/test`). Die REST-Endpunkte lassen sich mit Postman testen: zuerst über `POST /auth/registrieren` einen Nutzer anlegen (Body: `{"username": "...", "password": "..."}`), danach bei allen weiteren Anfragen unter **Authorization → Basic Auth** die Zugangsdaten eintragen. Ohne Login antwortet die API mit 401.

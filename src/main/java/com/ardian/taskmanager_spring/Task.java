@@ -15,6 +15,9 @@ public class Task {
     @ManyToOne
     private Projekt projekt;
 
+    @ManyToOne
+    private Nutzer nutzer;
+
     public Long getId() {
         return id;
     }
@@ -45,5 +48,13 @@ public class Task {
 
     public void setProjekt(Projekt projekt) {
         this.projekt = projekt;
+    }
+
+    public Nutzer getNutzer() {
+        return nutzer;
+    }
+
+    public void setNutzer(Nutzer nutzer) {
+        this.nutzer = nutzer;
     }
 }
