@@ -48,3 +48,9 @@ Ein einfaches Task-Management-Backend, entwickelt mit Spring Boot, Spring Data J
 ## Testen
 
 Die Repository-Schicht ist testgetrieben entwickelt (siehe `src/test`). Die REST-Endpunkte lassen sich mit Postman testen: zuerst über `POST /auth/registrieren` einen Nutzer anlegen (Body: `{"username": "...", "password": "..."}`), danach bei allen weiteren Anfragen unter **Authorization → Basic Auth** die Zugangsdaten eintragen. Ohne Login antwortet die API mit 401.
+
+## Tests
+- Repository-Tests mit @DataJpaTest
+- Controller-Tests mit @WebMvcTest, MockMvc und Mockito (@MockitoBean):
+    - Zugriff ohne Login wird mit 401 abgewiesen
+    - Task ohne Titel liefert 400
