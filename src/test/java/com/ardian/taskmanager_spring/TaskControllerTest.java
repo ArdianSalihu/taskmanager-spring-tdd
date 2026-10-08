@@ -1,13 +1,15 @@
 package com.ardian.taskmanager_spring;
 
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
@@ -44,5 +46,28 @@ public class TaskControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"status\":\"OFFEN\"}"))
                 .andExpect(status().isBadRequest());
+    }
+
+    // Eingeloggt als "ich", aber die Task gehört "anderer": erwartet 403
+    @Test
+    @WithMockUser(username = "ich")
+    void testFremdeTaskLoeschen() throws Exception {
+        // Der eingeloggte Nutzer, den die Hilfsmethode im Controller per Username sucht
+        Nutzer ich = new Nutzer();
+        ich.setUsername("ich");
+        when(nutzerRepository.findByUsername("ich")).thenReturn(ich);
+
+        // Der Besitzer der Task ist ein anderer Nutzer
+        Nutzer anderer = new Nutzer();
+        anderer.setUsername("anderer");
+
+        Task task = new Task();
+        task.setNutzer(anderer);
+
+        // Das Fake-Repository liefert diese Task, wenn der Controller nach ID 1 sucht
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
+
+        mockMvc.perform(delete("/task/1"))
+                .andExpect(status().isForbidden());
     }
 }

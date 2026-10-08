@@ -54,3 +54,4 @@ Die Repository-Schicht ist testgetrieben entwickelt (siehe `src/test`). Die REST
 - Controller-Tests mit @WebMvcTest, MockMvc und Mockito (@MockitoBean):
     - Zugriff ohne Login wird mit 401 abgewiesen
     - Task ohne Titel liefert 400
+    - Fremde Task löschen liefert 403
