@@ -1,10 +1,10 @@
-# Task Manager Backend (Spring Boot + TDD)
+# Task Manager Backend (Spring Boot)
 
 Ein einfaches Task-Management-Backend, entwickelt mit Spring Boot, Spring Data JPA und MySQL. Verwaltet Projekte und die dazugehörigen Tasks, inklusive Registrierung, Login und Zugriffsschutz.
 
 ## Verwendete Konzepte
 
-- Test-Driven Development (Repository-Ebene, mit @DataJpaTest)
+- Automatisierte Tests (Repository-Ebene mit @DataJpaTest, Controller-Ebene mit MockMvc)
 - Spring Boot (REST-Controller, Dependency Injection)
 - Spring Data JPA (automatische Datenbank-Anbindung über Repositories)
 - Spring Security (Basic Auth, BCrypt-Passwort-Hashing)
@@ -49,7 +49,7 @@ Ein einfaches Task-Management-Backend, entwickelt mit Spring Boot, Spring Data J
 
 Tests ausführen: `./mvnw test` (Windows: `mvnw.cmd test`)
 
-- Repository-Tests mit @DataJpaTest (testgetrieben entwickelt)
+- Repository-Tests mit @DataJpaTest
 - Controller-Tests mit @WebMvcTest, MockMvc und Mockito (@MockitoBean):
   - Zugriff ohne Login wird mit 401 abgewiesen
   - Task ohne Titel liefert 400
