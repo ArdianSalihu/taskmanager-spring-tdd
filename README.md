@@ -11,7 +11,7 @@ Ein einfaches Task-Management-Backend, entwickelt mit Spring Boot, Spring Data J
 - Datenbank-Beziehungen (@ManyToOne von Task zu Projekt und zu Nutzer)
 - MySQL als relationale Datenbank
 - Validierung und zentrale Fehlerbehandlung (@ExceptionHandler)
-- Vollständige REST-Prinzipien (GET, POST, PUT, DELETE)
+- REST-Endpunkte (GET, POST, PUT, DELETE)
 
 ## Endpunkte
 
@@ -45,13 +45,16 @@ Ein einfaches Task-Management-Backend, entwickelt mit Spring Boot, Spring Data J
 - Löschen darf nur der Bearbeiter der Task, bei fremden Tasks antwortet die API mit 403 Forbidden
 - Tasks ohne Bearbeiter (zum Beispiel vor dem Einbau der Nutzer angelegte) können nicht gelöscht werden
 
-## Testen
-
-Die Repository-Schicht ist testgetrieben entwickelt (siehe `src/test`). Die REST-Endpunkte lassen sich mit Postman testen: zuerst über `POST /auth/registrieren` einen Nutzer anlegen (Body: `{"username": "...", "password": "..."}`), danach bei allen weiteren Anfragen unter **Authorization → Basic Auth** die Zugangsdaten eintragen. Ohne Login antwortet die API mit 401.
-
 ## Tests
-- Repository-Tests mit @DataJpaTest
+
+Tests ausführen: `./mvnw test` (Windows: `mvnw.cmd test`)
+
+- Repository-Tests mit @DataJpaTest (testgetrieben entwickelt)
 - Controller-Tests mit @WebMvcTest, MockMvc und Mockito (@MockitoBean):
-    - Zugriff ohne Login wird mit 401 abgewiesen
-    - Task ohne Titel liefert 400
-    - Fremde Task löschen liefert 403
+  - Zugriff ohne Login wird mit 401 abgewiesen
+  - Task ohne Titel liefert 400
+  - Fremde Task löschen liefert 403
+
+### Manuell mit Postman
+
+Die REST-Endpunkte lassen sich mit Postman testen: zuerst über `POST /auth/registrieren` einen Nutzer anlegen (Body: `{"username": "...", "password": "..."}`), danach bei allen weiteren Anfragen unter **Authorization → Basic Auth** die Zugangsdaten eintragen. Ohne Login antwortet die API mit 401.
